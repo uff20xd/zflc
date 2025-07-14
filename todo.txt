@@ -1,0 +1,29 @@
+//applies the raw mode to the entire file
+@!apply raw 
+//mark the file as a binary allowing main mode to be used
+@!mark bin
+
+//imports a library (in this case the standard library)
+get ende;
+
+//marks the main function
+@apply main
+fn main() i32
+{
+  let arg: &char[] = "world";
+  let arg2: *const u8 = "Hello, world!";
+  ende::println("Hello,", arg);
+  i32
+}
+
+
+
+//Defines a new mode
+//Emulates parts of rusts borrow checker
+@def safe 
+{
+  @with raw
+  #macro_name $TOKEN_STREAM -> #TYPE TOKEN_STREAM
+  {
+  }
+}
