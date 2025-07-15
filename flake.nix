@@ -22,7 +22,7 @@
           buildInputs = with pkgs; [
             clang
             glibc
-            llvmPackages.bintools
+            llvmPackages_latest.bintools
             fasm
             rustup
           ];
