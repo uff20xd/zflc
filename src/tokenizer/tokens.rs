@@ -13,5 +13,3 @@ pub struct Token {
     token_type: TokenType,
 }
 
-Token::new()
-
