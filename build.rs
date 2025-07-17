@@ -4,7 +4,6 @@ use redoxr::redoxr::*;
 fn main() -> MainResult {
     let _redoxr = Redoxr::new(&[
         "--cfg", "run",
-        "--cfg", "quiet",
     ]);
 
     let mut main_crate = RustCrate::new("zflc", ".")
