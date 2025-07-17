@@ -15,7 +15,7 @@ fn main() -> MainResult {
         .make_bin()
         .stay();
     compile!(main_crate);
-    run!(main_crate);
+    run!(main_crate, "test/test.zf");
     Ok(())
 }
 

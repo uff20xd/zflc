@@ -88,8 +88,12 @@ pub mod redoxr {
 
     use std::{
         process::{
-            Command, //Child,
+            Command,
+            exit,
+            //Child,
         }, 
+        time::SystemTimeError,
+        env,
         fs::self,
         error::Error,
         fmt::Display,
@@ -132,6 +136,7 @@ pub mod redoxr {
         NotCompiled,
         AlreadyCompiled(String),
         IOProcessFailed(IOError),
+        SelfCompileError(Box<dyn Error>)
     }
 
     impl Display for RedoxError {
@@ -143,6 +148,7 @@ pub mod redoxr {
                 RedoxError::NotCompiled => {format!("The File is not Compiled!")},
                 RedoxError::AlreadyCompiled(file) => {format!("File {} is already compiled!", file)},
                 RedoxError::IOProcessFailed(error) => {format!("{}", error)},
+                RedoxError::SelfCompileError(error) => {format!("{}", error)},
             };
             write!(f, "{}", output)
         }
@@ -152,6 +158,12 @@ pub mod redoxr {
     impl From<IOError> for RedoxError {
         fn from(io_error: std::io::Error) -> Self {
             RedoxError::IOProcessFailed(io_error)
+        }
+    }
+
+    impl From<SystemTimeError> for RedoxError {
+        fn from(system_time_error: std::time::SystemTimeError) -> Self {
+            RedoxError::SelfCompileError(Box::new(system_time_error))
         }
     }
 
@@ -199,8 +211,11 @@ pub mod redoxr {
     #[macro_export]
     macro_rules! run {
         ($comp_file:ident) => {
-            _ = ($comp_file).run()?;
-        }
+            _ = ($comp_file).run(&[])?;
+        };
+        ($comp_file:tt, $($arg:tt)*) => {
+            _ = ($comp_file).run(&[$($arg)*])?;
+        };
     }
 
     ///A Struct that defines a Rust Crate managed by any build system
@@ -369,7 +384,10 @@ pub mod redoxr {
 
             let mut dependency_flags: Vec<(String, String, String)> = Vec::new();
             for dependency in &self.deps {
-                if !dependency.borrow().is_compiled() {return Err(RedoxError::Error(line!()))}
+                #[cfg(debug)]
+                dbg!(dependency.borrow());
+
+                if !dependency.borrow().is_compiled() {return Err(RedoxError::NotCompiled)}
                 let dep = dependency.borrow();
                 dependency_flags.push(( dep.get_name(), dep.get_outpath(), dep.get_root()));
 
@@ -406,7 +424,6 @@ pub mod redoxr {
 
             if self.is_show_output() {
                 let mut child = compile_command.spawn()?;
-
                 match child.wait() {
                     Ok(_) => {
                         self.compiled = true;
@@ -415,8 +432,13 @@ pub mod redoxr {
                     Err(_) => {return Err(RedoxError::Error(line!()))},
                 }
             } else {
-                _ = compile_command.output()?;
-                return Ok(());
+                match compile_command.output() {
+                    Ok(_) => {
+                        self.compiled = true;
+                        return Ok(());
+                    },
+                    Err(_) => {return Err(RedoxError::Error(line!()))},
+                }
             }
         }
 
@@ -561,19 +583,24 @@ pub mod redoxr {
         }
 
         ///runs the compiled crate as long as the --cgf run option is enabled
-        pub fn run(&self) -> Result<(), RedoxError> {
+        pub fn run(&self, args: &[&str]) -> Result<(), RedoxError> {
             #[cfg(not(run))]
             const RUN: bool = false;
 
             #[cfg(run)]
             const RUN: bool = true;
 
+            #[cfg(debug)]
+            println!("{}", RUN);
             if !RUN { return Ok(()) }
             if !self.is_compiled() {return Err(RedoxError::NotCompiled)}
             if !self.is_bin() {return Err(RedoxError::NotExecutable)}
 
             let command_name = ".".to_owned() + PATH_SEPERATOR + &self.get_outpath();
             let mut run_command = Command::new(command_name);
+            for arg in args {
+                _ = run_command.arg(arg);
+            }
             _ = run_command.status()?;
             Ok(())
         }
@@ -682,19 +709,39 @@ pub mod redoxr {
             #[cfg(not(boot_strap))]
             const BOOT_STRAP: bool = false;
 
+            #[cfg(debug)]
+            println!("{}",BOOT_STRAP);
+
             if self.compiled || !BOOT_STRAP { return Ok(()) }
             else { self.compiled = true; }
 
-            let mut compile_command = Command::new("rustc");
-            let _ = compile_command.arg("build.rs")
-                .args(COMP_VERSION)
-                .args(&self.flags[..]);
+            let args: Vec<String> = std::env::args().collect();
+            let main_file_name = args[0].clone() + ".rs";
+            let main_file = fs::File::open(&main_file_name)?;
+            let exec_file = fs::File::open(&args[0])?;
 
-            #[cfg(not(quiet))]
-            let _ = compile_command.status()?;
+            #[cfg(debug)]
+            println!("main_file_name: {}, exec_file_name: {}", main_file_name, &args[0]);
 
-            #[cfg(quiet)]
-            let _ = compile_command.output()?;
+            if main_file.metadata()?.modified()?.elapsed()? < exec_file.metadata()?.modified()?.elapsed()? {
+                let mut compile_command = Command::new("rustc");
+                let _ = compile_command.arg(&main_file_name)
+                    .args(&["-o", &args[0]])
+                    .args(COMP_VERSION)
+                    .args(&self.flags[..]);
+
+                #[cfg(verbose)]
+                let _ = compile_command.status()?;
+
+                #[cfg(not(verbose))]
+                let _ = compile_command.output()?;
+
+                let mut run_command = Command::new(&args[0]);
+
+                let _ = run_command.status()?;
+
+                exit(0)
+            }
 
             Ok(())
         }
