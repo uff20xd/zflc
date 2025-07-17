@@ -8,8 +8,10 @@ pub enum TokenType {
 }
 
 pub struct Token {
-    line: u64,
-    pos: u64,
+    line: usize,
+    pos: usize,
     token_type: TokenType,
 }
+
+Token::new()
 
