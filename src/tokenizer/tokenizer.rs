@@ -73,8 +73,9 @@ impl Lexer {
                 if !self.next() { 
                     tokens.push(
                         Token {
-                            token_type: IntegerLiteral(token_buffer.parse::<i64>()?),
-
+                            token_type: TokenType::IntegerLiteral(token_buffer.parse::<i64>()?),
+                            line: line_buffer,
+                            pos: pos_buffer,
                         }
                     );
                     break; 
@@ -87,12 +88,57 @@ impl Lexer {
                     if !self.next() { break; }
                     current_char = self.get_char();
                 }
-                tokens.push
+                tokens.push(
+                    Token {
+                        token_type: TokenType::IntegerLiteral(token_buffer.parse::<i64>()?),
+                        line: line_buffer,
+                        pos: pos_buffer,
+                    }
+                );
+                token_buffer.truncate(0);
                 if !self.back() {panic!("Shouldnt get this one. On line: {}", line!())};
+            }
+            else {
+                pos_buffer = self.pos;
+                line_buffer = self.line;
+                let mut is_next = true;
+                loop {
+
+                    println!("{}", current_char);
+
+                    if (current_char == '\t' || current_char == ' ') || !is_next {
+
+                        println!("{}", token_buffer.clone());
+
+                        if token_buffer == "return" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Return,
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+
+                        } else {
+                            token_buffer.truncate(0);
+                            break;
+
+                        }
+                    } else {
+                        token_buffer.push(current_char)
+                    }
+
+                    is_next = self.next();
+                    if is_next {
+                        current_char = self.get_char();
+                    }
+                }
             }
 
             if !self.next() { break; };
         }
-        tokens
+        Ok(tokens)
     }
 }
