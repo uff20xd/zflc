@@ -29,6 +29,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut lexer = Lexer::new(source_code_in_lines)?;
     let tokens = lexer.lex();
 
+    let mut compiler = Compiler::new(tokens);
+    let assembly = compiler.compile();
+
+    let mut assemmbly_file = fs::File::open(&args[1])?;
+
+
     println!("{:?}", tokens);
 
 

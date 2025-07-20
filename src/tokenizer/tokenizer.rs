@@ -38,12 +38,12 @@ impl Lexer {
     }
 
     pub fn back(&mut self) -> bool {
-        self.pos -= 1;
-        if 0 > self.pos {
+        if 0 == self.pos {
             self.line -= 1;
             self.pos = self.source_code[self.line].len();
+        } else {
+            self.pos -= 1;
         }
-        if 0 > self.line { return false; }
         true
     }
 
