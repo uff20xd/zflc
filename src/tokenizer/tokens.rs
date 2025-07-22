@@ -2,10 +2,8 @@
 pub enum TokenType {
     IntegerLiteral(i64),
     StringLiteral(i64),
-    Return,
-    Keyword,
-    FunctionDefinition,
-    Identifier,
+    Keyword(String),
+    Ident(String),
     Semi,
 }
 

@@ -113,7 +113,7 @@ impl Lexer {
                         if token_buffer == "return" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Return,
+                                    token_type: TokenType::Keyword("Return"),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -121,7 +121,62 @@ impl Lexer {
                             token_buffer.truncate(0);
                             break;
 
-                        } else {
+                        } 
+                        else if token_buffer == "fn"
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword("Function"),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "type" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword("Function"),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "type" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword("Function"),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "type" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword("Function"),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer.trim() == "" {
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else {
+                            token {
+                                    token_type: TokenType::Ident(token_buffer.clone()),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
                             token_buffer.truncate(0);
                             break;
 
