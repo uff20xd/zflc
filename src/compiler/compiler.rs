@@ -40,7 +40,7 @@ main:
                     if let Some(token) = self.next() {
                         match token.token_type {
                             TokenType::IntegerLiteral(value) => {
-                                let instruction = format!("    mov rdi,{}", value);
+                                let instruction = format!("    mov rdi,{}\n", value);
                                 output.push_str(&instruction);
                             },
                             _ => {panic!("The return statement requires an integerlitera as its next token! at:{}:{}", token.line, token.pos)}
