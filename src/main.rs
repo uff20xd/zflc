@@ -31,13 +31,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut lexer = Lexer::new(source_code_in_lines)?;
     let tokens = lexer.lex()?;
 
-    let mut compiler = Compiler::new(tokens?);
+    let mut compiler = Compiler::new(tokens);
     let assembly = compiler.compile();
 
     let mut assembly_file = fs::File::create("out/out.asm")?;
     write!(&mut assembly_file, "{}", &assembly);
 
-    _ = Command::new("fasm").args(&["out/out.asm", "out/out"]).status()?;
+    _ = Command::new("fasm").args(&["./out/out.asm", "./out/out"]).status()?;
     _ = Command::new("./out/out").status()?;
 
     //println!("{:?}", &assembly);
