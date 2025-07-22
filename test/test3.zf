@@ -1,0 +1,17 @@
+@apply raw
+
+i32 -> NULL
+fn exit(exit_code)
+{
+  @syscall %rax %rdi
+  {
+    %rax = 60;
+    %rdi = exit_code;
+  }
+}
+
+i64::&const u8 -> i32
+fn main(argc argv)
+{
+  exit(69);
+}
