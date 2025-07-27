@@ -43,7 +43,7 @@ pub enum NodeType {
     // { Expr+ }
     Block,
 
-    //{ Ident ~ (Ident ~ Ident)+ }
+    //{ Ident ~ (Ident ~ Type)+ }
     Struct,
 
     // { Ident ~ (Ident ~ Ident)+ ~ Ident ~ Block }
@@ -57,6 +57,12 @@ pub enum NodeType {
 
     // { Ident ~ BoolExpr ~ Expr ~ Block }
     For,
+
+    // { Ident }
+    Type,
+
+    // { }
+    Ident(String),
 }
 
 #[derive(Clone, Debug)]
@@ -72,6 +78,7 @@ impl Node {
             children: Vec::new(),
         }
     }
+    #[inline(always)]
     pub fn get_node_type(&self) -> NodeType {
         self.node_type.clone()
     }
@@ -104,19 +111,46 @@ impl Parser {
         }
     }
 
-    pub fn parse_value() -> Self {
-        let mut node = Node::new();
-        
-        node
-    }
-
     #[inline(always)]
-    pub fn get_next_token(self) -> Option<Token> {
+    fn get_next_token(self) -> Option<Token> {
         if self.token_pointer >= self.token_list_len - 1 {
             None
         }
         self.token_pointer += 1;
         Some(self.token_list[self.token_pointer])
+    }
+
+    fn get_current_token(self) -> Option<Token> {
+        if self.token_pointer >= self.token_list_len {
+            None
+        }
+        Some(self.token_list[self.token_pointer])
+    }
+
+
+    fn parse_value(&mut self) -> Node {
+        let mut node = Node::new(NodeType::Value);
+        let mut token = self.get_next_token();
+
+        let child = match token.token_type {
+            TokenType::IntegerLiteral => {self.parse_string()},
+            TokenType::StringLiteral => {self.parse_integer()},
+            _ => {},
+        }
+        token.add_child(child);
+
+        node
+    }
+
+    fn parse_string() -> Node {
+        let mut token = self.get_current_token();
+        let mut node = Node::new(NodeType::Value);
+
+        node
+    }
+
+    pub fn parse_ident(&mut self) -> Self {
+
     }
 
     pub fn parse() -> Node {
