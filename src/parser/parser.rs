@@ -120,6 +120,7 @@ impl Parser {
         Some(self.token_list[self.token_pointer])
     }
 
+    #[inline(always)]
     fn get_current_token(self) -> Option<Token> {
         if self.token_pointer >= self.token_list_len {
             None
@@ -130,7 +131,8 @@ impl Parser {
 
     fn parse_value(&mut self) -> Node {
         let mut node = Node::new(NodeType::Value);
-        let mut token = self.get_next_token();
+        let mut token = self.get_current_token()
+            .expect(format!("Token Stream ends unexpectedly at {}:{}", self.tokens[self.tokens.len( - 1)].pos, self.tokens[self.tokens.len() - 1].line))
 
         let child = match token.token_type {
             TokenType::IntegerLiteral => {self.parse_string()},
@@ -162,7 +164,7 @@ impl Parser {
 
             }
             else {
-
+                break;
             }
         }
 

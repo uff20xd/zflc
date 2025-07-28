@@ -136,7 +136,7 @@ impl Lexer {
                         else if token_buffer == "type" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("Function"),
+                                    token_type: TokenType::Keyword("TypeDecleration"),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -144,10 +144,10 @@ impl Lexer {
                             token_buffer.truncate(0);
                             break;
                         }
-                        else if token_buffer == "type" {
+                        else if token_buffer == "let" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("Function"),
+                                    token_type: TokenType::Keyword("VariableDecleration"),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -155,10 +155,21 @@ impl Lexer {
                             token_buffer.truncate(0);
                             break;
                         }
-                        else if token_buffer == "type" {
+                        else if token_buffer == "mut" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("Function"),
+                                    token_type: TokenType::Keyword("MutableDecleration"),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "struct" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword("StructDefinition"),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -171,7 +182,8 @@ impl Lexer {
                             break;
                         }
                         else {
-                            token {
+                            tokens.push(
+                                token {
                                     token_type: TokenType::Ident(token_buffer.clone()),
                                     line: line_buffer,
                                     pos: pos_buffer,

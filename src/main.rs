@@ -3,6 +3,7 @@ mod compiler;
 use tokenizer::tokenizer::Lexer;
 use tokenizer::tokens::Token;
 use compiler::compiler::Compiler;
+use parser::parser::Parser;
 use std::{
     env,
     fs,
@@ -31,14 +32,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut lexer = Lexer::new(source_code_in_lines)?;
     let tokens = lexer.lex()?;
 
-    let mut compiler = Compiler::new(tokens);
-    let assembly = compiler.compile();
+    let mut parser = Parser::new(tokens);
+    let ast = parser.parse();
 
-    let mut assembly_file = fs::File::create("out/out.asm")?;
-    write!(&mut assembly_file, "{}", &assembly);
-
-    _ = Command::new("fasm").args(&["./out/out.asm", "./out/out"]).status()?;
-    _ = Command::new("./out/out").status()?;
+//    let mut compiler = Compiler::new(tokens);
+//    let assembly = compiler.compile();
+//
+//    let mut assembly_file = fs::File::create("out/out.asm")?;
+//    write!(&mut assembly_file, "{}", &assembly);
+//
+//    _ = Command::new("fasm").args(&["./out/out.asm", "./out/out"]).status()?;
+//    _ = Command::new("./out/out").status()?;
 
     //println!("{:?}", &assembly);
 
