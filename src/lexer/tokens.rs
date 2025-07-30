@@ -2,22 +2,25 @@
 pub enum TokenType {
     IntegerLiteral(i64),
     StringLiteral(i64),
-    Keyword(String),
+    Keyword(Keyword),
     Ident(String),
     Semi,
 }
 
+#[derive(Debug, Clone)]
 pub enum Keyword {
     Return,
     Function,
     Public,
     Struct,
     Enum,
+    Type,
     Get,
     For,
     If,
     Else,
-
+    Let,
+    Mutable,
 }
 
 #[derive(Debug, Clone)]

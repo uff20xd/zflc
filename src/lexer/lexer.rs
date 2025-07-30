@@ -1,5 +1,7 @@
-use crate::tokenizer::tokens::Token;
-use crate::tokenizer::tokens::TokenType;
+use crate::lexer::tokens::Token;
+use crate::lexer::tokens::TokenType;
+use crate::lexer::tokens::Keyword;
+
 pub struct Lexer {
     source_code: Vec<Vec<char>>,
     pos: usize,
@@ -63,13 +65,13 @@ impl Lexer {
                         line: self.line,
                         pos: self.pos,
                     }
-                )
+                );
             } 
             else if current_char.is_numeric() {
                 token_buffer.push(current_char);
                 line_buffer = self.line;
                 pos_buffer = self.pos;
-                
+
                 if !self.next() { 
                     tokens.push(
                         Token {
@@ -98,6 +100,9 @@ impl Lexer {
                 token_buffer.truncate(0);
                 if !self.back() {panic!("Shouldnt get this one. On line: {}", line!())};
             }
+            else if current_char == '\"' {
+                token_buffer.push(current_char);
+            }
             else {
                 pos_buffer = self.pos;
                 line_buffer = self.line;
@@ -113,7 +118,7 @@ impl Lexer {
                         if token_buffer == "return" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("Return"),
+                                    token_type: TokenType::Keyword(Keyword::Return),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -122,10 +127,10 @@ impl Lexer {
                             break;
 
                         } 
-                        else if token_buffer == "fn"
+                        else if token_buffer == "fn" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("Function"),
+                                    token_type: TokenType::Keyword(Keyword::Function),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -136,7 +141,7 @@ impl Lexer {
                         else if token_buffer == "type" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("TypeDecleration"),
+                                    token_type: TokenType::Keyword(Keyword::Type),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -147,7 +152,7 @@ impl Lexer {
                         else if token_buffer == "let" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("VariableDecleration"),
+                                    token_type: TokenType::Keyword(Keyword::Let),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -158,7 +163,7 @@ impl Lexer {
                         else if token_buffer == "mut" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("MutableDecleration"),
+                                    token_type: TokenType::Keyword(Keyword::Mutable),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -169,7 +174,7 @@ impl Lexer {
                         else if token_buffer == "struct" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword("StructDefinition"),
+                                    token_type: TokenType::Keyword(Keyword::Struct),
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -183,9 +188,8 @@ impl Lexer {
                         }
                         else {
                             tokens.push(
-                                token {
-                                    token_type: TokenType::Ident(token_buffer.clone()),
-                                    line: line_buffer,
+                                Token {
+                                    token_type: TokenType::Ident(token_buffer.clone()), line: line_buffer,
                                     pos: pos_buffer,
                                 }
                             );
@@ -193,6 +197,7 @@ impl Lexer {
                             break;
 
                         }
+
                     } else {
                         token_buffer.push(current_char)
                     }

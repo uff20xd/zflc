@@ -1,5 +1,5 @@
-use crate::tokenizer::tokens::Token;
-use crate::tokenizer::tokens::TokenType;
+use crate::lexer::tokens::Token;
+use crate::lexer::tokens::TokenType;
 
 #[derive(Clone, Debug)]
 pub enum NodeType {
@@ -95,68 +95,72 @@ impl Node {
 
 #[derive(Clone, Debug)]
 pub struct Parser {
-    token_list: Vec<Token>,
+    tokens: Vec<Token>,
     token_pointer: usize,
     token_list_len: usize,
     ast: Node,
 }
 
 impl Parser {
-    pub fn new(token_list: Vec<Token>) -> Self {
+    pub fn new(tokens: Vec<Token>) -> Self {
         Self {
-            token_list,
-            token_list_len: token_list.len(),
+            tokens: tokens.clone(),
+            token_list_len: tokens.len(),
             token_pointer: 0,
-            ast: Node::new(),
+            ast: Node::new(NodeType::Program),
         }
     }
 
     #[inline(always)]
-    fn get_next_token(self) -> Option<Token> {
+    fn get_next_token(&mut self) -> Option<Token> {
         if self.token_pointer >= self.token_list_len - 1 {
-            None
+            return None;
         }
         self.token_pointer += 1;
-        Some(self.token_list[self.token_pointer])
+        Some(self.tokens[self.token_pointer].clone())
     }
 
     #[inline(always)]
-    fn get_current_token(self) -> Option<Token> {
+    fn get_current_token(&self) -> Option<Token> {
         if self.token_pointer >= self.token_list_len {
-            None
+            return None;
         }
-        Some(self.token_list[self.token_pointer])
+        Some(self.tokens[self.token_pointer].clone())
     }
 
 
     fn parse_value(&mut self) -> Node {
         let mut node = Node::new(NodeType::Value);
         let mut token = self.get_current_token()
-            .expect(format!("Token Stream ends unexpectedly at {}:{}", self.tokens[self.tokens.len( - 1)].pos, self.tokens[self.tokens.len() - 1].line))
+            .expect(&format!("Token Stream ends unexpectedly at {}:{}", self.tokens[self.tokens.len() - 1].pos, self.tokens[self.tokens.len() - 1].line));
 
         let child = match token.token_type {
-            TokenType::IntegerLiteral => {self.parse_string()},
-            TokenType::StringLiteral => {self.parse_integer()},
-            _ => {},
-        }
-        token.add_child(child);
+            TokenType::IntegerLiteral(_) => {self.parse_string()},
+            TokenType::StringLiteral(_) => {self.parse_integer()},
+            _ => {panic!("Expected Value and found: {:?}", &token)},
+        };
+        node.add_child(child);
 
         node
     }
 
-    fn parse_string() -> Node {
+    fn parse_string(&mut self) -> Node {
         let mut token = self.get_current_token();
         let mut node = Node::new(NodeType::Value);
 
         node
     }
 
-    pub fn parse_ident(&mut self) -> Self {
-
+    fn parse_integer(&mut self) -> Node {
+        todo!()
     }
 
-    pub fn parse() -> Node {
-        let mut ast = Node::new();
+    fn parse_ident(&mut self) -> Self {
+        todo!()
+    }
+
+    pub fn parse(&mut self) -> Node {
+        let mut ast = Node::new(NodeType::Program);
 
         loop {
 

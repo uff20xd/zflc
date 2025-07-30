@@ -1,7 +1,8 @@
-mod tokenizer;
+mod lexer;
 mod compiler;
-use tokenizer::tokenizer::Lexer;
-use tokenizer::tokens::Token;
+mod parser;
+use lexer::lexer::Lexer;
+use lexer::tokens::Token;
 use compiler::compiler::Compiler;
 use parser::parser::Parser;
 use std::{
@@ -34,6 +35,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let mut parser = Parser::new(tokens);
     let ast = parser.parse();
+
+    println!("{:?}", &ast);
 
 //    let mut compiler = Compiler::new(tokens);
 //    let assembly = compiler.compile();
