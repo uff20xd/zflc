@@ -7,6 +7,19 @@ pub enum TokenType {
     Semi,
 }
 
+pub enum Keyword {
+    Return,
+    Function,
+    Public,
+    Struct,
+    Enum,
+    Get,
+    For,
+    If,
+    Else,
+
+}
+
 #[derive(Debug, Clone)]
 pub struct Token {
     pub line: usize,
