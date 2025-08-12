@@ -5,7 +5,26 @@ pub enum TokenType {
     Keyword(Keyword),
     Ident(String),
     Semi,
+    MathOperator(MathOperator),
+    BoolOperator(BoolOperator),
 }
+
+pub enum MathOperator {
+    Plus,
+    Minus,
+    Multiply,
+    Divide,
+    Modulo,
+}
+
+pub enum BoolOperator {
+    Equal,
+    LesserThan,
+    GreaterThan,
+    GreaterThanOrEqualTo,
+    LesserThanOrEqualTo
+}
+
 
 #[derive(Debug, Clone)]
 pub enum Keyword {

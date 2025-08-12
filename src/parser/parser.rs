@@ -112,6 +112,13 @@ impl Parser {
     }
 
     #[inline(always)]
+    fn get_pnth(&mut self, plus: i32) -> Option<Token> {
+        if self.token_pointer + plus >= self.token_list_len { return None; }
+
+        Some(self.tokens[self.token_pointer + plus].clone())
+    }
+
+    #[inline(always)]
     fn get_next_token(&mut self) -> Option<Token> {
         if self.token_pointer >= self.token_list_len - 1 {
             return None;
@@ -132,16 +139,30 @@ impl Parser {
     fn parse_value(&mut self) -> Node {
         let mut node = Node::new(NodeType::Value);
         let mut token = self.get_current_token()
-            .expect(&format!("Token Stream ends unexpectedly at {}:{}", self.tokens[self.tokens.len() - 1].pos, self.tokens[self.tokens.len() - 1].line));
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
 
         let child = match token.token_type {
             TokenType::IntegerLiteral(_) => {self.parse_string()},
             TokenType::StringLiteral(_) => {self.parse_integer()},
+            Token::Bracket(_) => { self.parse_list() },
             _ => {panic!("Expected Value and found: {:?}", &token)},
         };
+
+        let probe_for_expr = self.get_pnth();
+        child
+
+
         node.add_child(child);
 
         node
+    }
+
+    fn parse_expr(&mut self, left: Node) -> Node {
+        todo!()
     }
 
     fn parse_string(&mut self) -> Node {
@@ -155,7 +176,11 @@ impl Parser {
         todo!()
     }
 
-    fn parse_ident(&mut self) -> Self {
+    fn parse_ident(&mut self) -> Node {
+        todo!()
+    }
+
+    fn parse_list(&mut self) -> Node{
         todo!()
     }
 
