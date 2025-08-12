@@ -149,20 +149,76 @@ impl Parser {
             TokenType::IntegerLiteral(_) => {self.parse_string()},
             TokenType::StringLiteral(_) => {self.parse_integer()},
             Token::Bracket(_) => { self.parse_list() },
-            _ => {panic!("Expected Value and found: {:?}", &token)},
+            _ => { panic!("Expected Value and found: {:?}", &token) },
         };
 
         let probe_for_expr = self.get_pnth();
-        child
-
+        if probe_for_expr.is_math_operator() { child = self.parse_math_expr(Some(child.clone())) }
+        else if probe_for_expr.is_math_operator() { child = self.parse_bool_expr(Some(child.clone())) }
 
         node.add_child(child);
 
         node
     }
 
-    fn parse_expr(&mut self, left: Node) -> Node {
+    fn parse_bool_expr(&mut self, left: Option<Node>) -> Node {
+        let mut node = Node::new(NodeType::BoolExpr)
+        let mut child;
+        if let Some(left_node) = left {
+            node.add_child(left_node.clone());
+        }
+        else {
+            node.add_child(self.parse_value());
+        }
+        if let Some(token) = self.get_next_token() { self.parse_bool_operator() }
+        else { panic!("Unexpected end of Program") }
+        node.add_child(self.parse_value());
         todo!()
+    }
+
+    fn parse_math_expr(&mut self, left: Option<Node>) -> Node {
+        let mut node = Node::new(NodeType::MathExpr)
+        let mut child;
+        if let Some(left_node) = left {
+            node.add_child(left_node.clone());
+        }
+        else {
+            node.add_child(self.parse_value());
+        }
+        if let Some(token) = self.get_next_token() { self.parse_math_operator() }
+        else { panic!("Unexpected end of Program") }
+        node.add_child(self.parse_value());
+        todo!()
+    }
+
+    fn parse_bool_operator(&mut self) -> Node {
+        let node_type = match self.get_current_token() {
+                TokenType::Plus => { NodeType::Plus },
+                TokenType::Minus => { NodeType::Minus },
+                TokenType::Mult => { NodeType::Mult },
+                TokenType::Divide => { NodeType::Divide },
+                TokenType::Modulo => { NodeType::Modulo },
+            _ => { panic!("Expected Operator, found {}", self.get_current_token()) }
+        }
+
+        Node::new(node_type)
+    }
+
+    fn parse_math_operator(&mut self) -> Node {
+        let node_type = match self.get_current_token() {
+                TokenType::Plus => { NodeType::Plus },
+                TokenType::Minus => { NodeType::Minus },
+                TokenType::Mult => { NodeType::Mult },
+                TokenType::Divide => { NodeType::Divide },
+                TokenType::Modulo => { NodeType::Modulo },
+            _ => { panic!("Expected Operator, found {}", self.get_current_token()) }
+        }
+
+        Node::new(node_type)
+    }
+
+    fn parse_bool_operator(&mut self) -> Node {
+
     }
 
     fn parse_string(&mut self) -> Node {

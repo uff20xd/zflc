@@ -5,26 +5,20 @@ pub enum TokenType {
     Keyword(Keyword),
     Ident(String),
     Semi,
-    MathOperator(MathOperator),
     BoolOperator(BoolOperator),
-}
 
-pub enum MathOperator {
     Plus,
     Minus,
     Multiply,
     Divide,
     Modulo,
-}
 
-pub enum BoolOperator {
-    Equal,
+    EqualTo,
     LesserThan,
     GreaterThan,
     GreaterThanOrEqualTo,
-    LesserThanOrEqualTo
+    LesserThanOrEqualTo,
 }
-
 
 #[derive(Debug, Clone)]
 pub enum Keyword {
@@ -47,4 +41,28 @@ pub struct Token {
     pub line: usize,
     pub pos: usize,
     pub token_type: TokenType,
+}
+
+impl Token {
+    pub fn is_math_operator(&self) -> bool {
+        match self.token_type {
+            TokenType::Plus => {true},
+            TokenType::Minus => {true},
+            TokenType::Mult => {true},
+            TokenType::Divide=> {true},
+            TokenType::Modulo => {true},
+            _ => { false },
+        }
+    }
+
+    pub fn is_math_operator(&self) -> bool {
+        match self.token_type {
+            TokenType::EqualTo => { true },
+            TokenType::LesserThan => { true },
+            TokenType::GreaterThan => { true },
+            TokenType::GreaterThanOrEqualTo => { true },
+            TokenType::LesserThanOrEqualTo => { true },
+            _ => { false },
+        }
+    }
 }
