@@ -5,11 +5,17 @@ pub enum TokenType {
     Keyword(Keyword),
     Ident(String),
     Semi,
-    BoolOperator(BoolOperator),
+
+    LeftParen,
+    RightParen,
+    LeftBracket,
+    RightBracket,
+    LeftBrace,
+    RightBrace,
 
     Plus,
     Minus,
-    Multiply,
+    Mult,
     Divide,
     Modulo,
 
@@ -55,7 +61,7 @@ impl Token {
         }
     }
 
-    pub fn is_math_operator(&self) -> bool {
+    pub fn is_bool_operator(&self) -> bool {
         match self.token_type {
             TokenType::EqualTo => { true },
             TokenType::LesserThan => { true },
