@@ -7,7 +7,7 @@ pub enum NodeType {
     // { (FunctionDeclaration | Type) }
     Program,
 
-    // { Bool | Integer | Float | String | List | Expr }
+    // { Bool | Integer | Float | String | List | Expr | Ident }
     Value,
 
     // { }
@@ -58,10 +58,13 @@ pub enum NodeType {
     //{ Ident ~ (Ident ~ Type)+ }
     Struct,
 
-    // { Ident ~ (Ident ~ Ident)+ ~ Ident ~ Block }
+    // { Ident ~ FunctionInputs ~ Ident ~ Block }
     FunctionDeclaration,
 
-    // { Ident ~ (Ident ~ Ident)+}
+    // { (Ident ~ Ident)+ }
+    FunctionInputs,
+
+    // { Ident ~ (Value)+ }
     FunctionCall,
 
     // { BoolExpr ~ Block }
@@ -161,6 +164,7 @@ impl Parser {
             TokenType::IntegerLiteral(_) => {self.parse_string()},
             TokenType::StringLiteral(_) => {self.parse_integer()},
             TokenType::LeftBracket => { self.parse_list() },
+            TokenType::Ident => { self.parse_ident() },
             _ => { panic!("Expected Value and found: {:?}", &token) },
         };
 
@@ -172,6 +176,10 @@ impl Parser {
         node.add_child(child);
 
         node
+    }
+
+    fn parse_parentheses_value(&mut self) -> Node {
+        todo!()
     }
 
     fn parse_bool_expr(&mut self, left: Option<Node>) -> Node {
