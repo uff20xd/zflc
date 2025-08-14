@@ -161,10 +161,11 @@ impl Parser {
             ));
 
         let mut child = match token.token_type {
-            TokenType::IntegerLiteral(_) => {self.parse_string()},
-            TokenType::StringLiteral(_) => {self.parse_integer()},
+            TokenType::IntegerLiteral(_) => { self.parse_string() },
+            TokenType::StringLiteral(_) => { self.parse_integer() },
             TokenType::LeftBracket => { self.parse_list() },
-            TokenType::Ident => { self.parse_ident() },
+            TokenType::Ident(_) => { self.parse_ident() },
+            TokenType::LeftParen => { self.parse_parentheses_value() },
             _ => { panic!("Expected Value and found: {:?}", &token) },
         };
 
@@ -179,7 +180,14 @@ impl Parser {
     }
 
     fn parse_parentheses_value(&mut self) -> Node {
-        todo!()
+        let mut child = match token.token_type {
+            TokenType::LeftParen => { 
+                if let Some(_) = self.get_next_token() {}
+                else { panic!("Tokenstream unexpectedly ends!") }
+                self.parse_ident() 
+            },
+            _ => { self.parse_value() },
+        };
     }
 
     fn parse_bool_expr(&mut self, left: Option<Node>) -> Node {

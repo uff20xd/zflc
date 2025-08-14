@@ -182,6 +182,50 @@ impl Lexer {
                             token_buffer.truncate(0);
                             break;
                         }
+                        else if token_buffer == "if" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword(Keyword::If),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "else" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword(Keyword::Else),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "while" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword(Keyword::While),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "for" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword(Keyword::For),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
                         else if token_buffer.trim() == "" {
                             token_buffer.truncate(0);
                             break;
