@@ -270,13 +270,38 @@ impl Parser {
         todo!()
     }
 
+    fn parse_function(&mut self) -> Node {
+        todo!()
+    }
+
+    fn parse_function_dec(&mut self) -> Node {
+        todo!()
+    }
+
+    fn parse_struct(&mut self) -> Node {
+        todo!()
+    }
+
+    fn parse_get(&mut self) -> Node {
+        todo!()
+    }
+
     pub fn parse(&mut self) -> Node {
         let mut ast = Node::new(NodeType::Program);
+        let mut child;
 
         loop {
 
             if let Some(token) = self.get_next_token() {
-
+                child = match token.token_type {
+                    Token::Keyword(value) => { match value {
+                        Keyword::Struct => { self.parse_struct() },
+                        Keyword::FunctionDeclaration => { self.parse_function_dec() },
+                        Keyword::Get => { self.parse_get() },
+                        _ => { panic!("Unexpected Token: {}:{}", token.line, token.pos) }
+                    }},
+                    _ => { panic!("Unexpected Token: {}:{}", token.line, token.pos) },
+                }
             }
             else {
                 break;
