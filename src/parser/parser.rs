@@ -1,5 +1,6 @@
 use crate::lexer::tokens::Token;
 use crate::lexer::tokens::TokenType;
+use crate::lexer::tokens::Keyword;
 
 #[derive(Clone, Debug)]
 pub enum NodeType {
@@ -180,6 +181,12 @@ impl Parser {
     }
 
     fn parse_parentheses_value(&mut self) -> Node {
+        let mut token = self.get_current_token()
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
         let mut child = match token.token_type {
             TokenType::LeftParen => { 
                 if let Some(_) = self.get_next_token() {}
@@ -188,6 +195,7 @@ impl Parser {
             },
             _ => { self.parse_value() },
         };
+        child
     }
 
     fn parse_bool_expr(&mut self, left: Option<Node>) -> Node {
@@ -252,14 +260,33 @@ impl Parser {
     }
 
     fn parse_string(&mut self) -> Node {
-        let mut token = self.get_current_token();
-        let mut node = Node::new(NodeType::Value);
+        let mut token = self.get_current_token()
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
+
+        let node_type = NodeType::String("".to_owned());
+        let mut node = Node::new(node_type);
 
         node
     }
 
     fn parse_integer(&mut self) -> Node {
-        todo!()
+        let mut token = self.get_current_token()
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
+        let node_type = match token.token_type {
+            TokenType::IntegerLiteral(value) => { NodeType::Integer(value) },
+            _ => { panic!("Expected Integer, found {:?}", token) },
+        };
+        let mut node = Node::new(node_type);
+
+        node
     }
 
     fn parse_ident(&mut self) -> Node {
@@ -294,9 +321,9 @@ impl Parser {
 
             if let Some(token) = self.get_next_token() {
                 child = match token.token_type {
-                    Token::Keyword(value) => { match value {
+                    TokenType::Keyword(value) => { match value {
                         Keyword::Struct => { self.parse_struct() },
-                        Keyword::FunctionDeclaration => { self.parse_function_dec() },
+                        Keyword::Function => { self.parse_function_dec() },
                         Keyword::Get => { self.parse_get() },
                         _ => { panic!("Unexpected Token: {}:{}", token.line, token.pos) }
                     }},

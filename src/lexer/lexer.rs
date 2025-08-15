@@ -30,11 +30,17 @@ impl Lexer {
 
     fn next(&mut self) -> bool {
         self.pos += 1;
+        dbg!(&self.pos);
+        dbg!(&self.line);
+        dbg!(&self.source_code.len());
         if self.source_code[self.line].len() - 1 < self.pos {
             self.line += 1;
             self.pos = 0;
         }
-        if self.source_code.len() - 1 < self.line { return false; }
+        dbg!(&self.pos);
+        dbg!(&self.line);
+        dbg!(&self.source_code.len());
+        if self.source_code.len() < self.line { return false; }
 
         true
     }
@@ -55,6 +61,7 @@ impl Lexer {
         let mut line_buffer;
         let mut pos_buffer;
         let mut current_char: char;
+        let mut _lexing = true;
 
         loop {
             current_char = self.get_char();
@@ -75,13 +82,13 @@ impl Lexer {
                 if !self.next() { 
                     tokens.push(
                         Token {
-                            token_type: TokenType::IntegerLiteral(token_buffer.parse::<i64>()?),
+                            token_type: TokenType::IntegerLiteral(token_buffer.parse::<i128>()?),
                             line: line_buffer,
                             pos: pos_buffer,
                         }
                     );
                     break; 
-                }
+                } 
 
                 current_char = self.get_char();
 
@@ -92,7 +99,7 @@ impl Lexer {
                 }
                 tokens.push(
                     Token {
-                        token_type: TokenType::IntegerLiteral(token_buffer.parse::<i64>()?),
+                        token_type: TokenType::IntegerLiteral(token_buffer.parse::<i128>()?),
                         line: line_buffer,
                         pos: pos_buffer,
                     }
@@ -253,6 +260,7 @@ impl Lexer {
                 }
             }
 
+            dbg!(&self.pos);
             if !self.next() { break; };
         }
         Ok(tokens)

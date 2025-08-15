@@ -1,7 +1,7 @@
 #[derive(Debug, Clone)]
 pub enum TokenType {
-    IntegerLiteral(i64),
-    StringLiteral(i64),
+    IntegerLiteral(i128),
+    StringLiteral(String),
     Keyword(Keyword),
     Ident(String),
     Semi,
@@ -36,6 +36,8 @@ pub enum Keyword {
     Type,
     Get,
     For,
+    While,
+    Loop,
     If,
     Else,
     Let,
