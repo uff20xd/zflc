@@ -8,6 +8,9 @@ pub enum NodeType {
     // { (FunctionDeclaration | Type) }
     Program,
 
+    // Only used for parsing purposes
+    None,
+
     // { Bool | Integer | Float | String | List | Expr | Ident }
     Value,
 
@@ -26,7 +29,7 @@ pub enum NodeType {
     // { Value+ }
     List,
 
-    // { MathExpr | Block | BoolExpr | FunctionCall | VarDecleration }
+    // { Value | Block | FunctionCall | VarDecleration }
     Expr,
 
     // { Value ~ MathOperator ~ Value }
@@ -293,15 +296,45 @@ impl Parser {
         todo!()
     }
 
-    fn parse_list(&mut self) -> Node{
-        todo!()
+    fn parse_list(&mut self) -> Node {
+        let mut node = Node::new(NodeType::List);
+        let mut token = self.get_current_token()
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
+        token = (match token.token_type {
+            TokenType::LeftBracket => { self.get_next_token() },
+            _ => { panic!("Expected Left Bracket, found {:?}", token) },
+        })
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
+
+        loop {
+            match token.token_type {
+                TokenType::RightBracket => {
+                    break;
+                },
+                _ => { node.add_child(self.parse_value()) }
+            }
+        }
+
+        node
     }
 
-    fn parse_function(&mut self) -> Node {
+    fn parse_function_call(&mut self) -> Node {
         todo!()
     }
 
     fn parse_function_dec(&mut self) -> Node {
+        todo!()
+    }
+
+    fn parse_enum(&mut self) -> Node {
         todo!()
     }
 
@@ -316,23 +349,26 @@ impl Parser {
     pub fn parse(&mut self) -> Node {
         let mut ast = Node::new(NodeType::Program);
         let mut child;
+        let mut wrapped_token = self.get_current_token();
 
         loop {
 
-            if let Some(token) = self.get_next_token() {
+            if let Some(token) = wrapped_token {
                 child = match token.token_type {
                     TokenType::Keyword(value) => { match value {
                         Keyword::Struct => { self.parse_struct() },
                         Keyword::Function => { self.parse_function_dec() },
                         Keyword::Get => { self.parse_get() },
-                        _ => { panic!("Unexpected Token: {}:{}", token.line, token.pos) }
+                        _ => { panic!("Unexpected Token: {}:{}", token.line + 1, token.pos) }
                     }},
-                    _ => { panic!("Unexpected Token: {}:{}", token.line, token.pos) },
+                    _ => { panic!("Unexpected Token: {:?} {}:{}", token, token.line + 1, token.pos) },
                 }
             }
             else {
                 break;
             }
+
+            wrapped_token = self.get_next_token();
         }
 
         self.ast = ast.clone();

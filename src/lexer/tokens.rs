@@ -5,6 +5,8 @@ pub enum TokenType {
     Keyword(Keyword),
     Ident(String),
     Semi,
+    Period,
+    Colon,
 
     LeftParen,
     RightParen,
@@ -34,6 +36,7 @@ pub enum Keyword {
     Struct,
     Enum,
     Type,
+    Pack,
     Get,
     For,
     While,

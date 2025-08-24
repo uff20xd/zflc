@@ -30,17 +30,11 @@ impl Lexer {
 
     fn next(&mut self) -> bool {
         self.pos += 1;
-        dbg!(&self.pos);
-        dbg!(&self.line);
-        dbg!(&self.source_code.len());
         if self.source_code[self.line].len() - 1 < self.pos {
             self.line += 1;
             self.pos = 0;
         }
-        dbg!(&self.pos);
-        dbg!(&self.line);
-        dbg!(&self.source_code.len());
-        if self.source_code.len() < self.line { return false; }
+        if self.source_code.len() <= self.line { return false; }
 
         true
     }
@@ -74,6 +68,69 @@ impl Lexer {
                     }
                 );
             } 
+            else if current_char == '{' {
+                tokens.push(
+                    Token {
+                        token_type: TokenType::LeftBrace,
+                        line: self.line,
+                        pos: self.pos,
+                    }
+                );
+            }
+            else if current_char == '}' {
+                tokens.push(
+                    Token {
+                        token_type: TokenType::RightBrace,
+                        line: self.line,
+                        pos: self.pos,
+                    }
+                );
+            }
+            else if current_char == '(' {
+                tokens.push(
+                    Token {
+                        token_type: TokenType::LeftParen,
+                        line: self.line,
+                        pos: self.pos,
+                    }
+                );
+            }
+            else if current_char == ')' {
+                tokens.push(
+                    Token {
+                        token_type: TokenType::RightParen,
+                        line: self.line,
+                        pos: self.pos,
+                    }
+                );
+            }
+            else if current_char == '[' {
+                tokens.push(
+                    Token {
+                        token_type: TokenType::LeftBracket,
+                        line: self.line,
+                        pos: self.pos,
+                    }
+                );
+            }
+            else if current_char == ':' {
+                tokens.push(
+                    Token {
+                        token_type: TokenType::Colon,
+                        line: self.line,
+                        pos: self.pos,
+                    }
+                );
+            }
+            else if current_char == '.' {
+                tokens.push(
+                    Token {
+                        token_type: TokenType::Period,
+                        line: self.line,
+                        pos: self.pos,
+                    }
+                );
+            }
             else if current_char.is_numeric() {
                 token_buffer.push(current_char);
                 line_buffer = self.line;
@@ -118,7 +175,7 @@ impl Lexer {
 
                     println!("{}", current_char);
 
-                    if (current_char == '\t' || current_char == ' ') || !is_next {
+                    if (current_char == '\t' || current_char == ' ' || is_punctuation(current_char) ) || !is_next {
 
                         println!("{}", token_buffer.clone());
 
@@ -233,6 +290,28 @@ impl Lexer {
                             token_buffer.truncate(0);
                             break;
                         }
+                        else if token_buffer == "get" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword(Keyword::Get),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        }
+                        else if token_buffer == "pack" {
+                            tokens.push(
+                                Token {
+                                    token_type: TokenType::Keyword(Keyword::Pack),
+                                    line: line_buffer,
+                                    pos: pos_buffer,
+                                }
+                            );
+                            token_buffer.truncate(0);
+                            break;
+                        } 
                         else if token_buffer.trim() == "" {
                             token_buffer.truncate(0);
                             break;
@@ -260,9 +339,21 @@ impl Lexer {
                 }
             }
 
-            dbg!(&self.pos);
             if !self.next() { break; };
         }
         Ok(tokens)
+    }
+}
+
+
+fn is_punctuation(ch: char) -> bool {
+    match ch {
+        '{' => { true },
+        '}' => { true },
+        '(' => { true },
+        ')' => { true },
+        '[' => { true },
+        ']' => { true },
+        _ => { false },
     }
 }
