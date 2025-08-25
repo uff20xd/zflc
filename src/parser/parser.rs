@@ -59,8 +59,22 @@ pub enum NodeType {
     // { Expr+ }
     Block,
 
+    // { ident }
+    VarDecleration,
+
     //{ Ident ~ (Ident ~ Type)+ }
     Struct,
+
+    //{ Ident | (Ident ~ TypeMod+) }
+    Type,
+
+    //{ Mut | Pointer | Constans | Static }
+    TypeMode,
+
+    Mut,
+    Pointer,
+    Constans,
+    Static,
 
     // { Ident ~ FunctionInputs ~ Ident ~ Block }
     FunctionDeclaration,
@@ -76,9 +90,6 @@ pub enum NodeType {
 
     // { Ident ~ BoolExpr ~ Expr ~ Block }
     For,
-
-    // { Ident }
-    Type,
 
     // { }
     Ident(String),
@@ -293,7 +304,19 @@ impl Parser {
     }
 
     fn parse_ident(&mut self) -> Node {
-        todo!()
+        let token = self.get_current_token()
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
+        let ident = match token.token_type {
+            TokenType::Ident(string) => { string.clone() },
+            _ => { panic!("Expected Integer, found {:?}", token) },
+        };
+        let node = Node::new(NodeType::Ident(ident));
+
+        node
     }
 
     fn parse_list(&mut self) -> Node {
