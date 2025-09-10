@@ -354,7 +354,7 @@ impl Parser {
     }
 
     fn parse_function_dec(&mut self) -> Node {
-        todo!()
+
     }
 
     fn parse_enum(&mut self) -> Node {
