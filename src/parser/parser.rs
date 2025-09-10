@@ -166,6 +166,7 @@ impl Parser {
     }
 
 
+    #[inline(always)]
     fn parse_value(&mut self) -> Node {
         let mut node = Node::new(NodeType::Value);
         let mut token = self.get_current_token()
@@ -354,7 +355,9 @@ impl Parser {
     }
 
     fn parse_function_dec(&mut self) -> Node {
+        let node = Node::new(NodeType::FunctionDeclaration);
 
+        node
     }
 
     fn parse_enum(&mut self) -> Node {
