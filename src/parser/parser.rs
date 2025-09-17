@@ -356,6 +356,27 @@ impl Parser {
 
     fn parse_function_dec(&mut self) -> Node {
         let node = Node::new(NodeType::FunctionDeclaration);
+        let mut token = self.get_next_token()
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
+        match token.token_type {
+            TokenType::Keyword(kw) => {
+
+            },
+            _ => {panic!("the fuck is this")},
+        }
+
+        let mut token = self.get_next_token()
+            .expect(&format!(
+                "Token Stream ends unexpectedly at {}:{}",
+                self.tokens[self.tokens.len() - 1].pos,
+                self.tokens[self.tokens.len() - 1].line
+            ));
+
+
 
         node
     }
@@ -369,7 +390,10 @@ impl Parser {
     }
 
     fn parse_get(&mut self) -> Node {
-        todo!()
+        let node = Node::new(NodeType::Get);
+
+
+        node
     }
 
     pub fn parse(&mut self) -> Node {
