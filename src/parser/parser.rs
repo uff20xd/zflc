@@ -356,7 +356,7 @@ impl Parser {
 
     fn parse_function_dec(&mut self) -> Node {
         let node = Node::new(NodeType::FunctionDeclaration);
-        let mut token = self.get_next_token()
+        let mut token = self.get_current_token()
             .expect(&format!(
                 "Token Stream ends unexpectedly at {}:{}",
                 self.tokens[self.tokens.len() - 1].pos,
@@ -364,18 +364,19 @@ impl Parser {
             ));
         match token.token_type {
             TokenType::Keyword(kw) => {
+                match kw {
+                    Keyword::Function => {
 
+                    },
+                    _ => { panic!("Expected Keyword: 'fn'") }
+                }
             },
             _ => {panic!("the fuck is this")},
         }
 
-        let mut token = self.get_next_token()
-            .expect(&format!(
-                "Token Stream ends unexpectedly at {}:{}",
-                self.tokens[self.tokens.len() - 1].pos,
-                self.tokens[self.tokens.len() - 1].line
-            ));
+        let mut token = self.get_next_token();
 
+        node.add_child(self.parse_ident());
 
 
         node
