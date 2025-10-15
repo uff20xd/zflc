@@ -2,7 +2,6 @@
 pub enum TokenType {
     IntegerLiteral(i128),
     StringLiteral(String),
-    Keyword(Keyword),
     Ident(String),
     Semi,
     Period,
@@ -26,10 +25,7 @@ pub enum TokenType {
     GreaterThan,
     GreaterThanOrEqualTo,
     LesserThanOrEqualTo,
-}
 
-#[derive(Debug, Clone)]
-pub enum Keyword {
     Return,
     Function,
     Public,

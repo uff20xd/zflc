@@ -182,7 +182,7 @@ impl Lexer {
                         if token_buffer == "return" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Return),
+                                    token_type: TokenType::Return,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -194,7 +194,7 @@ impl Lexer {
                         else if token_buffer == "fn" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Function),
+                                    token_type: TokenType::Function,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -205,7 +205,7 @@ impl Lexer {
                         else if token_buffer == "type" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Type),
+                                    token_type: TokenType::Type,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -216,7 +216,7 @@ impl Lexer {
                         else if token_buffer == "let" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Let),
+                                    token_type: TokenType::Let,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -227,7 +227,7 @@ impl Lexer {
                         else if token_buffer == "mut" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Mutable),
+                                    token_type: TokenType::Mutable,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -238,7 +238,7 @@ impl Lexer {
                         else if token_buffer == "struct" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Struct),
+                                    token_type: TokenType::Struct,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -249,7 +249,7 @@ impl Lexer {
                         else if token_buffer == "if" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::If),
+                                    token_type: TokenType::If,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -260,7 +260,7 @@ impl Lexer {
                         else if token_buffer == "else" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Else),
+                                    token_type: TokenType::Else,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -271,7 +271,7 @@ impl Lexer {
                         else if token_buffer == "while" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::While),
+                                    token_type: TokenType::While,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -282,7 +282,7 @@ impl Lexer {
                         else if token_buffer == "for" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::For),
+                                    token_type: TokenType::For,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -293,7 +293,7 @@ impl Lexer {
                         else if token_buffer == "get" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Get),
+                                    token_type: TokenType::Get,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
@@ -304,7 +304,7 @@ impl Lexer {
                         else if token_buffer == "pack" {
                             tokens.push(
                                 Token {
-                                    token_type: TokenType::Keyword(Keyword::Pack),
+                                    token_type: TokenType::Pack,
                                     line: line_buffer,
                                     pos: pos_buffer,
                                 }
