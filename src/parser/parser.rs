@@ -1,6 +1,5 @@
 use crate::lexer::tokens::Token;
 use crate::lexer::tokens::TokenType;
-use crate::lexer::tokens::Keyword;
 
 #[derive(Clone, Debug)]
 pub enum NodeType {

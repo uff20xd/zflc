@@ -33,10 +33,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut lexer = Lexer::new(source_code_in_lines)?;
     let tokens = lexer.lex()?;
 
-    let mut parser = Parser::new(tokens);
-    let ast = parser.parse();
+    let mut parser = Parser::new(tokens.clone());
+    //let ast = parser.parse();
 
-    println!("{:?}", &ast);
+    println!("{:?}", &tokens);
 
 //    let mut compiler = Compiler::new(tokens);
 //    let assembly = compiler.compile();

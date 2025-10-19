@@ -1,11 +1,10 @@
 use crate::lexer::tokens::Token;
 use crate::lexer::tokens::TokenType;
-use crate::lexer::tokens::Keyword;
 
 pub struct Lexer {
     source_code: Vec<Vec<char>>,
-    pos: usize,
-    line: usize,
+    start: usize,
+    end: usize,
     token_list: Vec<Token>,
 }
 
